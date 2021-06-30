@@ -36,4 +36,28 @@ class Produto
             return [];
         }
     }
+
+    public function buscarPorId($id)
+    {
+        $sql = " SELECT p.*, c.descricao as categoria FROM tbl_produto p
+        INNER JOIN tbl_categoria c ON p.categoria_id = c.id
+        WHERE p.id = ? ";
+
+        //preparamos a consulta
+        $stmt = Model::getConexao()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        //executamos a consulta
+        $stmt->execute();
+
+        //verificamos a quantidade de linhas
+        if ($stmt->rowCount() > 0) {
+            //pegamos os resultados em forma de lista de objetos
+            $resultado = $stmt->fetch(\PDO::FETCH_OBJ);
+
+            //retornamos o resultado
+            return $resultado;
+        } else {
+            return null;
+        }
+    }
 }
